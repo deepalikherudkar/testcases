@@ -1,0 +1,19 @@
+<p>
+  <%= f.label :name %>
+  <%= f.text_field :name %>
+</p>
+<%= f.fields_for :phones do |phone| %>
+  <p>
+    <%= phone.label :phone_type %>
+    <%= phone.text_field :phone_type %>
+  </p>
+
+  <p>
+    <%= phone.label :phone_number %>
+    <%= phone.text_field :phone_number %>
+  </p>
+
+
+<% end %>
+
+<p><%= f.submit "Submit" %></p>

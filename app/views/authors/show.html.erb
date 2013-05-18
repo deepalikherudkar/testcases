@@ -1,0 +1,5 @@
+<p>Name: <%= @author.name %></p>
+<% @author.phones.each do |phone| %>
+  <p><%= phone.phone_type %>: <%= phone.phone_number %></p>
+<%end%>
+<%= link_to "edit",edit_author_path(@author) %> | <%= link_to "authors list",authors_path %>
