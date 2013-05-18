@@ -20,7 +20,6 @@ end
 
 def edit
   @author = Author.find(params[:id])
-  @author.phones.build
 end
 
 def update
