@@ -133,4 +133,18 @@ describe BooksController do
     end
   end
 
+  describe "publish" do
+    it "should reredirect to authors page" do
+      book = FactoryGirl.create(:book)
+      post :publish_flag,{:book_id => book.to_param }
+      book.reload
+      expect(book.published?).should eq true
+    end
+
+    it "should redirect to authors page" do
+      book = FactoryGirl.create(:book)
+      post :publish_flag,{:book_id => book.to_param }
+      response.should redirect_to books_url
+    end
+  end
 end

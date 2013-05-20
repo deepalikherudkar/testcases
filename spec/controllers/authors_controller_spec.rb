@@ -43,12 +43,23 @@ describe AuthorsController do |variable|
     end
   end
 
-  describe "GET create" do |variable|
+  describe "POST create" do |variable|
     context "with valid parameters" do
       it "assigns a new author as @author" do
         expect {
           post :create, {:author => valid_record.attributes}, valid_session
         }.should change(Author, :count).by(1)
+      end
+
+      it "assigns phone list to new author" do
+        phones = [ attributes_for(:phone, phone_type: "home"),
+                attributes_for(:phone, phone_type: "office"),
+                attributes_for(:phone, phone_type: "mobile")
+        ]
+        attributes = valid_record.attributes.merge(:phones_attributes => phones)
+        post :create, {:author => attributes }, valid_session
+        assigns[:author].should be_a(Author)
+        assigns[:author].phones.count.should eq 3
       end
 
       it "assigns a new author as @author" do |variable|
@@ -61,6 +72,11 @@ describe AuthorsController do |variable|
     context "with invalid parameters" do
       it "should render new template" do
         post :create,{:author => invalid_record}, valid_session
+        response.should render_template("new")
+      end
+
+      it "should not create new author" do
+        post :create,{:author => FactoryGirl.build :invalid_author}, valid_session
         response.should render_template("new")
       end
     end

@@ -79,4 +79,10 @@ class BooksController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def publish_flag
+    @book = Book.find(params[:book_id])
+    @book.mark_published_status(params[:book][:published])
+    redirect_to books_url
+  end
 end

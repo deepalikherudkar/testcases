@@ -4,7 +4,7 @@
   <tr>
     <th>Title</th>
     <th>Author</th>
-    <th></th>
+    <th>Publish</th>
     <th></th>
     <th></th>
   </tr>
@@ -13,6 +13,10 @@
   <tr>
     <td><%= link_to book.title, book.author %></td>
     <td><%= book.author.name if book.author %></td>
+    <%= form_for :book,:url => book_publish_flag_path(book) do |f| %>
+      <td><%= f.check_box :published,:checked => book.published? %></td>
+      <td><%= submit_tag "Submit" %></td>
+    <% end %>
     <td><%= link_to 'Show', book %></td>
     <td><%= link_to 'Edit', edit_book_path(book) %></td>
     <td><%= link_to 'Destroy', book, method: :delete, data: { confirm: 'Are you sure?' } %></td>

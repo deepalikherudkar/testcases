@@ -8,4 +8,8 @@ class Book < ActiveRecord::Base
   def self.by_title(letter)
     where("title like (?)","#{letter}%").collect(&:title).sort
   end
+
+  def mark_published_status(val)
+    update_attribute(:published, val)
+  end
 end

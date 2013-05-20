@@ -1,6 +1,10 @@
 Testcases::Application.routes.draw do
-  resources :books
+  resources :books do |variable|
+    post :publish_flag
+  end
+
   resources :authors
+  resources :phones
 
   resources :books do
   #     member do

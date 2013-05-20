@@ -14,4 +14,8 @@ FactoryGirl.define do
       end
     end
   end
+
+  factory :invalid_author do
+    name nil
+  end
 end
