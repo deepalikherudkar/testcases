@@ -2,12 +2,14 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.13'
 gem "interactive_rspec"
+gem 'devise', '1.4.7'
 
 group :development,:test do
   gem "rspec-rails", "~> 2.12.2"
   gem "factory_girl_rails", "~> 4.2.0"
   gem "guard-rspec", "~> 2.4.0"
   gem "sextant"
+  #gem 'device'
 end
 
 group :test do

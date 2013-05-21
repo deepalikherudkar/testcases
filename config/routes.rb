@@ -1,4 +1,6 @@
 Testcases::Application.routes.draw do
+  devise_for :users
+
   resources :books do |variable|
     post :publish_flag
   end
