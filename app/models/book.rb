@@ -1,5 +1,5 @@
 class Book < ActiveRecord::Base
-  attr_accessible :author_attributes, :title
+  attr_accessible :author_attributes, :title,:published
   belongs_to :author
   accepts_nested_attributes_for :author
 
@@ -9,7 +9,8 @@ class Book < ActiveRecord::Base
     where("title like (?)","#{letter}%").collect(&:title).sort
   end
 
-  def mark_published_status(val)
+  def update_status(val)
     update_attribute(:published, val)
   end
+
 end
