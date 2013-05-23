@@ -1,3 +1,5 @@
-<%= form_for @author do |f| %>
-  <%= render :partial => "form",:locals => {:f => f} %>
-<% end %>
+<%- model_class = Author -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => [:'helpers.titles.edit', 'Edit %{model}'], :model => model_class.model_name.human %></h1>
+</div>
+<%= render :partial => 'form' %>

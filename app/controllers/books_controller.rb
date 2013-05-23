@@ -82,7 +82,7 @@ class BooksController < ApplicationController
 
   def publish_flag
     @book = Book.find(params[:book_id])
-    @book.mark_published_status(params[:book][:published])
+    @book.update_status(params[:book][:published])
     redirect_to books_url
   end
 end

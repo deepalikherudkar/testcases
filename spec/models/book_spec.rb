@@ -57,15 +57,20 @@ describe Book do
     end
   end
 
-  describe "publishe/unpublish" do
-    it "should make mark_as_published as true when unpublished" do |variable|
+  describe "publish" do
+    it "should make published status as true" do |variable|
       book = FactoryGirl.create(:book)
-      book.mark_as_published.should eq true
-    end
-
-    it "should make mark_as_published as true when unpublished" do |variable|
-      book = FactoryGirl.create(:book)
-      book.mark_as_published.should eq true
+      book.update_status(true)
+      book.reload.published.should eq true
     end
   end
+
+  describe "unpublish" do
+    it "should make published status as false" do |variable|
+      book = FactoryGirl.create(:book)
+      book.update_status(false)
+      book.reload.published.should eq false
+    end
+  end
+
 end

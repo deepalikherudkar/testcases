@@ -1,7 +1,7 @@
 require 'spec_helper'
+include Devise::TestHelpers
 
-describe AuthorsController do |variable|
-
+describe AuthorsController do
   def valid_record
     FactoryGirl.build(:author)
   end
@@ -14,86 +14,102 @@ describe AuthorsController do |variable|
     FactoryGirl.create(:author)
   end
 
+  def create_invalid_author
+    FactoryGirl.build(:author,:name => nil)
+  end
+
   def valid_session
     {}
   end
 
-  describe "GET index " do |variable|
-    it "should get list of records" do |variable|
-      author = create_valid_author
-      get :index
-      expect(assigns(:authors)).to match_array [author]
+  describe "signed-in user" do
+    before(:each) do
+      @request.env["devise.mapping"] = :user
+      @user = FactoryGirl.create(:user)
+      @user.confirm!
+      sign_in @user
+      @user.stub(:user_signed_in?) { true }
     end
-    it "should render template" do |variable|
-      expect(get :index).should render_template("index")
-    end
-  end
-  describe "GET show" do
-    it "assigns the requested author as @author" do
-      author = create_valid_author
-      get :show,{:id => author.to_param}, valid_session
-      assigns(:author).should eq author
-    end
-  end
 
-  describe "GET new" do |variable|
-    it "assigns a new author as @author" do |variable|
-      get :new, {}, valid_session
-      assigns(:author).should be_a_new(Author)
-    end
-  end
+    describe "GET index " do
+      it "should get list of records" do
+        author = create_valid_author
+        get :index
+        expect(assigns(:authors)).to match_array [author]
+      end
 
-  describe "POST create" do |variable|
-    context "with valid parameters" do
+      it "should render template" do
+        expect(get :index).should render_template("index")
+      end
+    end
+    describe "GET show" do
+      it "assigns the requested author as @author" do
+        author = create_valid_author
+        get :show,{:id => author.to_param}
+        assigns(:author).should eq author
+      end
+    end
+
+    describe "GET new" do
       it "assigns a new author as @author" do
-        expect {
-          post :create, {:author => valid_record.attributes}, valid_session
-        }.should change(Author, :count).by(1)
+        get :new, {}
+        assigns(:author).should be_a_new(Author)
       end
+    end
 
-      it "assigns phone list to new author" do
+    describe "POST create" do
+      context "with valid parameters" do
+        it "assigns a new author as @author" do
+          expect {
+            post :create, {:author => valid_record.attributes}
+          }.should change(Author, :count).by(1)
+        end
+
+        it "assigns phone list to new author" do
         phones = [ attributes_for(:phone, phone_type: "home"),
-                attributes_for(:phone, phone_type: "office"),
-                attributes_for(:phone, phone_type: "mobile")
-        ]
-        attributes = valid_record.attributes.merge(:phones_attributes => phones)
-        post :create, {:author => attributes }, valid_session
-        assigns[:author].should be_a(Author)
-        assigns[:author].phones.count.should eq 3
+                  attributes_for(:phone, phone_type: "office"),
+                  attributes_for(:phone, phone_type: "mobile")
+          ]
+          attributes = valid_record.attributes.merge(:phones_attributes => phones)
+          post :create, {:author => attributes }
+          assigns[:author].should be_a(Author)
+          assigns[:author].phones.count.should eq 3
+        end
+
+        it "assigns a new author as @author" do
+          post :create, {:author => valid_record.attributes}
+          assigns(:author).should be_a(Author)
+          assigns(:author).should be_persisted
+      end
       end
 
-      it "assigns a new author as @author" do |variable|
-        post :create, {:author => valid_record.attributes}
-        assigns(:author).should be_a(Author)
-        assigns(:author).should be_persisted
+      context "with invalid parameters" do
+        it "should render new template" do
+          post :create,{:author => create_invalid_author}
+          response.should render_template("new")
+        end
+
+        it "should not create new author" do
+          author = create_invalid_author
+          post :create,{:author => author}
+          response.should render_template("new")
+        end
       end
     end
 
-    context "with invalid parameters" do
-      it "should render new template" do
-        post :create,{:author => invalid_record}, valid_session
-        response.should render_template("new")
+    describe "DELETE destroy" do
+      it "should delete the given record" do
+        author = create_valid_author
+          expect {
+            delete :destroy,:id => author
+          }.should change(Author, :count).by(-1)
       end
 
-      it "should not create new author" do
-        post :create,{:author => FactoryGirl.build :invalid_author}, valid_session
-        response.should render_template("new")
+      it "should redirect to authors page" do
+        author = create_valid_author
+        delete :destroy,:id => author
+        expect(response).should redirect_to authors_url
       end
-    end
-  end
-
-  describe "DELETE destroy" do |variable|
-    it "should delete the given record" do |variable|
-      author = create_valid_author
-        expect {
-          delete :destroy,:id => author
-        }.should change(Author, :count).by(-1)
-    end
-
-    it "should redirect to authors page" do |variable|
-      author = create_valid_author
-      delete :destroy,:id => author
-      expect(response).should redirect_to authors_url
     end
   end
 end

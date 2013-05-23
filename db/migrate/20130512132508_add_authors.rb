@@ -1,7 +1,8 @@
 class AddAuthors < ActiveRecord::Migration
   def up
-    create_table "authors",:force => true do |author|
-      author.string :name
+    create_table "authors",:force => true do |t|
+      t.string :name
+      t.timestamps
     end
   end
 
